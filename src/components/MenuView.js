@@ -2,9 +2,9 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import AddIcon from "@material-ui/icons/Add";
 import Chip from "@material-ui/core/Chip";
 import Paper from "@material-ui/core/Paper";
+import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 
 const MenuView = props => {
     const classes = useStyles();
@@ -15,13 +15,17 @@ const MenuView = props => {
             <Typography variant="h4">{menu.name}</Typography>
             <div>
                 {menu.menuItems.map(item => (
-                    <Paper elevation={2} className={classes.item}>
+                    <Paper elevation={2} key={item.id} className={classes.item}>
                         <div className={classes.flex}>
                             <div>
                                 <Typography variant="h5">{item.name}</Typography>
-                                <div>
-                                    {item.ingredients.map(ingredient => (
-                                        <Chip label={ingredient.name} variant="outlined" />
+                                <div className={classes.chips}>
+                                    {item.ingredients.map((ingredient, i) => (
+                                        <Chip
+                                            key={i}
+                                            label={ingredient.name}
+                                            variant="outlined"
+                                        />
                                     ))}
                                 </div>
                             </div>
@@ -36,7 +40,7 @@ const MenuView = props => {
                                         size="small"
                                         onClick={props.onClick(item)}
                                     >
-                                        <AddIcon />
+                                        <AddShoppingCartIcon />
                                     </Fab>
                                 </span>
                             </div>
@@ -63,8 +67,11 @@ const useStyles = makeStyles(theme => ({
         alignItems: "center",
         textAlign: "left"
     },
-    ingredient: {
-        display: "inline"
+    chips: {
+        marginTop: theme.spacing(1),
+        "& > *": {
+            marginRight: theme.spacing(0.5)
+        }
     }
 }));
 

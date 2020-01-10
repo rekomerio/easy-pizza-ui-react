@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import styled from "@material-ui/core/styles/styled";
-import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import Login from "./Login";
+import { setLoading } from "../redux/actions";
 
 const NavBar = props => {
     const classes = useStyles();
     const [isLoginOpen, setIsLoginOpen] = useState(false);
-    const { isLoggedIn } = props;
+    const { isLoggedIn, isLoading } = props;
 
     const toggleLogin = () => {
         setIsLoginOpen(!isLoginOpen);
@@ -21,35 +27,44 @@ const NavBar = props => {
     };
 
     return (
-        <div className={classes.navBar}>
-            <div>
-                <Link to="/">
-                    <StyledButton>Easy Pizza</StyledButton>
-                </Link>
-            </div>
-            <div>
-                {isLoggedIn ? (
-                    <Tooltip title="Click to log out">
-                        <StyledButton onClick={logOut}>Log out</StyledButton>
-                    </Tooltip>
-                ) : (
+        <div className={classes.root}>
+            <AppBar position="fixed">
+                <Toolbar>
+                    <Typography variant="h6" className={classes.title}>
+                        Easy pizza
+                    </Typography>
+
                     <React.Fragment>
-                        <Tooltip title="Open registeration page">
-                            <Link to="/register">
-                                <StyledButton>Register</StyledButton>
+                        <Tooltip title="Home">
+                            <Link to="/">
+                                <StyledButton>Home</StyledButton>
                             </Link>
                         </Tooltip>
-                        <Tooltip title="Click to open log in window">
-                            <StyledButton onClick={toggleLogin}>Log in</StyledButton>
-                        </Tooltip>
+                        {isLoggedIn ? (
+                            <Tooltip title="Click to log out">
+                                <StyledButton onClick={logOut}>Log out</StyledButton>
+                            </Tooltip>
+                        ) : (
+                            <React.Fragment>
+                                <Tooltip title="Open registeration page">
+                                    <Link to="/register">
+                                        <StyledButton>Register</StyledButton>
+                                    </Link>
+                                </Tooltip>
+                                <Tooltip title="Click to open log in window">
+                                    <StyledButton onClick={toggleLogin}>Log in</StyledButton>
+                                </Tooltip>
+                            </React.Fragment>
+                        )}
                     </React.Fragment>
-                )}
-            </div>
-            <Login
-                close={() => setIsLoginOpen(false)}
-                isLoggedIn={isLoggedIn}
-                isOpen={isLoginOpen}
-            />
+                </Toolbar>
+                <Login
+                    close={() => setIsLoginOpen(false)}
+                    isLoggedIn={isLoggedIn}
+                    isOpen={isLoginOpen}
+                />
+                {isLoading ? <LinearProgress /> : null}
+            </AppBar>
         </div>
     );
 };
@@ -59,16 +74,19 @@ const StyledButton = styled(Button)({
 });
 
 const useStyles = makeStyles(theme => ({
-    navBar: {
-        display: "flex",
-        justifyContent: "space-between",
-        backgroundColor: theme.palette.primary.main,
-        width: "100%",
-        position: "fixed",
-        top: 0,
-        paddingBottom: theme.spacing(1),
-        paddingTop: theme.spacing(1)
+    root: {
+        flexGrow: 1
+    },
+    menuButton: {
+        marginRight: theme.spacing(2)
+    },
+    title: {
+        flexGrow: 1
     }
 }));
 
-export default NavBar;
+const mapStateToProps = state => {
+    return state.loadingState;
+};
+
+export default connect(mapStateToProps, { setLoading })(NavBar);

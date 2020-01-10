@@ -40,7 +40,7 @@ const RestaurantView = () => {
 
     const getMenus = () => {
         if (menus.length === 0) return <div>No menus</div>;
-        return menus.map(menu => <MenuView menu={menu} onClick={addToCart} />);
+        return menus.map(menu => <MenuView key={menu.id} menu={menu} onClick={addToCart} />);
     };
 
     if (!restaurant) {

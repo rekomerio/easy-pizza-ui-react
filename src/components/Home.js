@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { setLoading } from "../redux/actions";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import API_URL_BASE from "../helpers/api-url";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import { Link } from "react-router-dom";
 
-const Home = () => {
+const Home = props => {
     const classes = useStyles();
     const [restaurants, setRestaurants] = useState([]);
 
     useEffect(() => {
+        props.setLoading(true);
         axios
             .get(API_URL_BASE + "restaurants")
             .then(res => {
@@ -24,7 +25,8 @@ const Home = () => {
             })
             .catch(err => {
                 setRestaurants(null);
-            });
+            })
+            .finally(() => props.setLoading(false));
     }, []);
 
     if (!restaurants) return <div>No connection</div>;
@@ -94,4 +96,4 @@ const useStyles = makeStyles({
     }
 });
 
-export default Home;
+export default connect(null, { setLoading })(Home);
