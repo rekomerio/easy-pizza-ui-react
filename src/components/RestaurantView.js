@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { setLoading } from "../redux/actions";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import API_URL_BASE from "../helpers/api-url";
 import Typography from "@material-ui/core/Typography";
 import MenuView from "./MenuView";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { addCartItem } from "../redux/actions";
-import { connect } from "react-redux";
 import ShoppingCart from "./ShoppingCart";
 
 const RestaurantView = props => {
@@ -15,13 +15,10 @@ const RestaurantView = props => {
     const [menus, setMenus] = useState([]);
     const restaurantId = useParams().id;
 
-    console.log(props);
-
     useEffect(() => {
         axios
             .get(API_URL_BASE + "restaurants/" + restaurantId)
             .then(res => {
-                console.log(res);
                 setRestaurant(res.data);
             })
             .catch(err => {
@@ -30,22 +27,20 @@ const RestaurantView = props => {
     }, []);
 
     useEffect(() => {
+        props.setLoading(true);
         axios
             .get(API_URL_BASE + "menus/restaurant/" + restaurantId)
             .then(res => {
-                console.log(res);
+                console.log(res.data);
                 setMenus(res.data);
             })
-            .catch(err => console.log(err));
+            .catch(err => console.log(err))
+            .finally(() => props.setLoading(false));
     }, []);
-
-    const addToCart = item => () => {
-        props.addCartItem(item);
-    };
 
     const getMenus = () => {
         if (menus.length === 0) return <div>No menus</div>;
-        return menus.map(menu => <MenuView key={menu.id} menu={menu} onClick={addToCart} />);
+        return menus.map(menu => <MenuView key={menu.id} menu={menu} />);
     };
 
     if (!restaurant) {
@@ -107,4 +102,4 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default connect(null, { addCartItem })(RestaurantView);
+export default connect(null, { setLoading })(RestaurantView);

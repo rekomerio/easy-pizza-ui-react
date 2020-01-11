@@ -3,9 +3,9 @@ export const setLoading = isLoading => ({
     payload: { isLoading }
 });
 
-export const addCartItem = item => ({
+export const addCartItem = (item, restaurantId) => ({
     type: "ADD_ITEM",
-    payload: { item }
+    payload: { item, restaurantId }
 });
 
 export const removeCartItem = item => ({

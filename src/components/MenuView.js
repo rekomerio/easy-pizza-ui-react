@@ -1,14 +1,21 @@
 import React from "react";
+import { connect } from "react-redux";
+import { addCartItem } from "../redux/actions";
 import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Chip from "@material-ui/core/Chip";
 import Paper from "@material-ui/core/Paper";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const MenuView = props => {
     const classes = useStyles();
-    const { menu } = props;
+    const { menu, restaurantId } = props;
+
+    const addToCart = item => () => {
+        props.addCartItem(item, menu.restaurantId);
+    };
 
     return (
         <div className={classes.root}>
@@ -33,16 +40,29 @@ const MenuView = props => {
                                 <Typography variant="subtitle2" align="center">
                                     {item.price.toFixed(2) + "€"}
                                 </Typography>
-                                <span>
-                                    <Fab
-                                        color="secondary"
-                                        aria-label="add"
-                                        size="small"
-                                        onClick={props.onClick(item)}
-                                    >
-                                        <AddShoppingCartIcon />
-                                    </Fab>
-                                </span>
+                                <Tooltip
+                                    title={
+                                        restaurantId !== -1 &&
+                                        restaurantId !== menu.restaurantId
+                                            ? "Can't mix items from different restaurants"
+                                            : "Add to shopping cart"
+                                    }
+                                >
+                                    <span>
+                                        <Fab
+                                            color="secondary"
+                                            aria-label="add"
+                                            size="small"
+                                            disabled={
+                                                restaurantId !== -1 &&
+                                                restaurantId !== menu.restaurantId
+                                            }
+                                            onClick={addToCart(item)}
+                                        >
+                                            <AddShoppingCartIcon />
+                                        </Fab>
+                                    </span>
+                                </Tooltip>
                             </div>
                         </div>
                     </Paper>
@@ -75,4 +95,8 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default MenuView;
+const mapStateToProps = state => ({
+    restaurantId: state.shoppingCart.restaurantId
+});
+
+export default connect(mapStateToProps, { addCartItem })(MenuView);

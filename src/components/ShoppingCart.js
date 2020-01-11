@@ -7,11 +7,13 @@ import Typography from "@material-ui/core/Typography";
 
 const ShoppingCart = props => {
     const classes = useStyles();
-    const { ids, price } = props;
+    const { ids, price, restaurantId, discount } = props;
 
     return (
         <div className={classes.root}>
-            <Typography variant="h6">Price: {price.toFixed(2)} €</Typography>
+            <Typography variant="h6">Total: {price.toFixed(2)} €</Typography>
+            <Typography variant="body1">Restaurant ID: {restaurantId}</Typography>
+            <Typography variant="subtitle2">Discount: {discount * 100} %</Typography>
             {ids.map(id => (
                 <ShoppingCartItem key={id} id={id} />
             ))}
@@ -25,8 +27,11 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const mapStateToProps = state => {
-    return { ids: getShoppingCartIds(state), price: getShoppingCartPrice(state) };
-};
+const mapStateToProps = state => ({
+    ids: getShoppingCartIds(state),
+    price: getShoppingCartPrice(state),
+    restaurantId: state.shoppingCart.restaurantId,
+    discount: state.shoppingCart.discount
+});
 
 export default connect(mapStateToProps)(ShoppingCart);

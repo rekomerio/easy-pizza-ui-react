@@ -1,15 +1,15 @@
-export const getShoppingCartState = store => store.shoppingCart;
+export const shoppingCartState = store => store.shoppingCart;
 
 export const getShoppingCartItemById = (store, id) =>
-    getShoppingCartState(store) ? getShoppingCartState(store).items[id] : {};
+    shoppingCartState(store) ? shoppingCartState(store).items[id] : {};
 
 export const getShoppingCartIds = store =>
-    getShoppingCartState(store) ? getShoppingCartState(store).ids : [];
+    shoppingCartState(store) ? shoppingCartState(store).ids : [];
 
 export const getShoppingCartItems = store =>
-    getShoppingCartState(store)
-        ? getShoppingCartState(store).ids.map(id => getShoppingCartItemById(store, id))
+    shoppingCartState(store)
+        ? shoppingCartState(store).ids.map(id => getShoppingCartItemById(store, id))
         : [];
 
 export const getShoppingCartPrice = store =>
-    getShoppingCartState(store) ? getShoppingCartState(store).price : null;
+    shoppingCartState(store) ? shoppingCartState(store).price : null;
