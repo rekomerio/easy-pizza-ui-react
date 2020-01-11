@@ -19,7 +19,7 @@ const Login = props => {
     const { isOpen } = props;
 
     const handleClickAway = () => {
-        console.log("Click away");
+        // console.log("Click away");
     };
 
     const handleSubmit = e => {

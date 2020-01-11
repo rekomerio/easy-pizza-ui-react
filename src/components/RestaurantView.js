@@ -5,12 +5,17 @@ import API_URL_BASE from "../helpers/api-url";
 import Typography from "@material-ui/core/Typography";
 import MenuView from "./MenuView";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import { addCartItem } from "../redux/actions";
+import { connect } from "react-redux";
+import ShoppingCart from "./ShoppingCart";
 
-const RestaurantView = () => {
+const RestaurantView = props => {
     const classes = useStyles();
     const [restaurant, setRestaurant] = useState({});
     const [menus, setMenus] = useState([]);
     const restaurantId = useParams().id;
+
+    console.log(props);
 
     useEffect(() => {
         axios
@@ -35,7 +40,7 @@ const RestaurantView = () => {
     }, []);
 
     const addToCart = item => () => {
-        console.log(item);
+        props.addCartItem(item);
     };
 
     const getMenus = () => {
@@ -69,6 +74,7 @@ const RestaurantView = () => {
             <div className={classes.content}>
                 <div className={classes.menu}>{getMenus()}</div>
             </div>
+            <ShoppingCart />
         </div>
     );
 };
@@ -101,4 +107,4 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default RestaurantView;
+export default connect(null, { addCartItem })(RestaurantView);
